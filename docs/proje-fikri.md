@@ -6,33 +6,33 @@
 
 ## 1. Proje Künyesi
 
-- **Proje Adı:** [Projenizin Adı]
-- **Slogan / Tek Cümlelik Tanım:** [Örn: Üniversite öğrencileri için hızlı kampüs rehberi]
-- **Öğrenci Adı Soyadı:** [Adınız Soyadınız]
-- **Öğrenci Numarası:** [Öğrenci Numaranız]
-- **İlham Alınan Konsept / Platform:** [Örn: Spotify / Getir / Duolingo / Tesla / Kendi Fikrim]
+- **Proje Adı:** TakCar (Esnek Araç Kiralama Platformu)
+- **Slogan / Tek Cümlelik Tanım:** Şehir içinde ihtiyaç anında hızlı ve pratik araç kiralama uygulaması.
+- **Öğrenci Adı Soyadı:** [Mustafa Kaya]
+- **Öğrenci Numarası:** [252051012]
+- **İlham Alınan Konsept / Platform:** [ Tiktak ]
 
 ---
 
 ## 2. Proje Amacı ve Çözülen Problem
 
-[Uygulamanız hangi sorunu çözüyor? Kullanıcı ne yapacak? 2-3 cümleyle açıklayın.]
+[Kullanıcıların çevrelerindeki müsait araçları harita üzerinden anında bulup, karmaşık sözleşmelerle uğraşmadan hızlıca kiralayabilmesini sağlar. Şehir içi ulaşım sorununa pratik ve dijital bir çözüm sunar]
 
 ---
 
 ## 3. Temel Ekranlar ve İşlevler
 
 1. **Ana Liste Ekranı (Keşfet):**
-   - [Hangi öğeler listelenecek? Hangi filtreler olacak?]
+   - [Yakındaki boş araçların harita üzerindeki konumu, model bilgileri ve dakika/günlük ücretleri.]
 2. **Detay ve Seçim Ekranı:**
-   - [Öğenin detayında hangi bilgiler, seçenekler ve butonlar yer alacak?]
+   - [Aracın özellikleri, yakıt durumu, fotoğrafları ve kiralama onay butonları.]
 3. **Kayıt / Kod Üretme Ekranı (Rust Backend):**
-   - [Rust komutu ne tür bir işlem veya onay/takip kodu üretecek?]
+   - [Kiralama başlatıldığında aracın kilidini açmak için güvenli dijital onay/başlatma kodu üretir.]
 4. **Profil ve Ayarlar:**
-   - [Kullanıcı hangi bilgilerini görecek ve hangi ayarları değiştirebilecek?]
+   - [Kullanıcı ehliyet bilgileri, sürüş geçmişi ve ödeme yöntemleri.]
 
 ---
 
 ## 4. Hedef Kitle
 
-[Bu uygulamayı kimler kullanacak?]
+[Hızlı ve esnek ulaşım arayan şehir içi sürücüler ve öğrenciler.]
