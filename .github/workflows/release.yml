@@ -2,13 +2,15 @@
 #
 #   git tag v0.1.0 && git push origin v0.1.0
 #
-# Etiket (v*) gönderilince Windows / macOS (universal) / Linux kurulum dosyaları ve bir Android APK
-# derlenir ve GitHub Release'e eklenir. Pull request'te ve elle çalıştırmada (Actions -> Run workflow)
+# Etiket (v*) gönderilince Windows / macOS (universal) / Linux kurulum dosyaları, bir Android APK ve
+# iPhone + iPad için imzasız bir IPA derlenir ve GitHub Release'e eklenir. Pull request'te ve elle çalıştırmada (Actions -> Run workflow)
 # yalnızca derleme denenir; dosyalar "Artifacts" altında indirilir, Release oluşmaz.
 #
 # İmzalama yok: Apple Developer hesabı gerekmez. macOS'ta uygulama ilk açılışta
 # sağ tık -> Aç ile onaylanır; Windows SmartScreen "Yine de çalıştır" uyarısı verebilir.
 # APK, Android'in debug anahtarıyla imzalanır (Play Store'a yüklenemez, doğrudan kurulabilir).
+# IPA imzasızdır (--no-sign): Sideloadly / AltStore ile kendi Apple ID'nle imzalayıp iPhone veya
+# iPad'e kurarsın. TestFlight / App Store için ücretli Apple Developer hesabı gerekir; bu workflow'da yok.
 name: Release
 
 on:
@@ -175,3 +177,62 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release upload "$GITHUB_REF_NAME" "${{ steps.sign.outputs.apk }}" --clobber
+
+  ios:
+    name: iOS IPA (iPhone + iPad, imzasız)
+    needs: desktop
+    if: ${{ !cancelled() }}
+    permissions:
+      contents: write
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-ios
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+          key: ios
+
+      - run: bun install --frozen-lockfile
+
+      - name: Tauri crate sürümlerini npm ile eşle
+        shell: bash
+        run: |
+          for p in $(awk -F'"' '/^name = "tauri/ {print $2}' src-tauri/Cargo.lock | sort -u); do
+            cargo update --manifest-path src-tauri/Cargo.toml -p "$p" || true
+          done
+
+      - name: iOS projesini üret (repoda yoksa)
+        run: |
+          command -v xcodegen > /dev/null || brew install xcodegen
+          [ -d src-tauri/gen/apple ] || bunx tauri ios init --ci
+
+      # Sertifika yok: CLI uygulamayı imzasız arşivler ve Payload/<uygulama>.app'i .ipa'ya paketler.
+      # Şablonun varsayılan cihaz ailesi iPhone + iPad'dir.
+      - name: İmzasız IPA derle
+        run: bunx tauri ios build --ci --no-sign
+
+      - name: IPA'yı bul
+        id: ipa
+        run: |
+          SRC="$(find src-tauri/gen/apple -name '*.ipa' | head -1)"
+          [ -n "$SRC" ] || { echo 'IPA bulunamadı' >&2; exit 1; }
+          OUT="${GITHUB_REPOSITORY#*/}_${GITHUB_REF_NAME//\//-}_ios_unsigned.ipa"
+          cp "$SRC" "$OUT"
+          echo "ipa=$OUT" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        if: env.PUBLISH != 'true'
+        with:
+          name: ios-ipa
+          path: ${{ steps.ipa.outputs.ipa }}
+          if-no-files-found: error
+
+      - name: IPA'yı Release'e ekle
+        if: env.PUBLISH == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" "${{ steps.ipa.outputs.ipa }}" --clobber
