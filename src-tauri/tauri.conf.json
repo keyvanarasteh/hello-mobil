@@ -14,7 +14,9 @@
       {
         "title": "PassoKlon",
         "width": 420,
-        "height": 820
+        "height": 820,
+        "minWidth": 360,
+        "minHeight": 640
       }
     ],
     "security": {
@@ -30,6 +32,18 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "category": "Utility",
+    "shortDescription": "hello-mobil",
+    "longDescription": "hello-mobil — İstinye Üniversitesi MYO063 Mobil Programlama projesi",
+    "macOS": {
+      "minimumSystemVersion": "10.15"
+    },
+    "iOS": {
+      "minimumSystemVersion": "15.0"
+    },
+    "android": {
+      "minSdkVersion": 24
+    }
   }
 }
